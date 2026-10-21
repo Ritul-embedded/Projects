@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Robot Control</title>
+
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <h2>Robot Controller</h2>
+
+    <label>
+        <input type="checkbox" id="moveForward">
+        Move Forward
+    </label>
+    <br>
+
+    <label>
+        <input type="checkbox" id="moveBackward">
+        Move Backward &amp; Turn
+    </label>
+    <br>
+
+    <label>
+        <input type="checkbox" id="randomMovement">
+        Random Movement
+    </label>
+    <br>
+
+    <h3>Status:</h3>
+    <div id="status"></div>
+
+    <script>
+        const socket = io();
+
+        const updateCheckbox = (id) => {
+            const checkbox = document.getElementById(id);
+
+            checkbox.addEventListener("change", () => {
+                socket.emit(id, checkbox.checked);
+            });
+        };
+
+        updateCheckbox("moveForward");
+        updateCheckbox("moveBackward");
+        updateCheckbox("randomMovement");
+
+        socket.on("status", function (message) {
+            document.getElementById("status").innerHTML +=
+                `<p>${message}</p>`;
+        });
+    </script>
+</body>
+</html>
