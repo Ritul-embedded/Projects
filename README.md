@@ -1,43 +1,81 @@
 # Engineering Projects Portfolio
 
-Welcome to my engineering project portfolio!
+### Embedded Systems | FPGA Design | RISC-V Architecture | Digital Electronics
 
-I am Ritul Mahajan, a Master's student in Electrical Engineering and Embedded Systems at Hochschule Ravensburg-Weingarten, Germany.
+Welcome to my engineering portfolio!
 
-This repository showcases academic and technical projects covering embedded systems, microcontrollers, FPGA design, digital hardware, sensor integration, and hardware-software development.
+I am **Ritul Mahajan**, a Master's student in **Electrical Engineering and Embedded Systems** at Hochschule Ravensburg-Weingarten, Germany.
 
-## Projects
+This repository presents a collection of academic and technical projects focused on **embedded software development, hardware-software integration, digital system design, processor architecture, and system-level verification**. The projects explore practical engineering concepts through hardware implementation, simulation, and testing.
 
-| Project | Technologies |
-|---|---|
-| Autonomous Robot | Raspberry Pi, Python, PWM, Encoders, Ultrasonic Sensor |
-| NFC/RFID Project | PN532, NFC/RFID |
-| RISC-V Floating Point ALU | SystemVerilog, Vivado |
-| RowHammer Research Project | SystemVerilog, Memory Systems |
-| RISC-V Debug Module | RISC-V, Digital Design |
-| Evaluation of Libraries | See project documentation |
+---
 
-## Technical Skills
+## Technical Projects
 
-- **Programming:** C, C++, Python, SystemVerilog
-- **Embedded Systems:** Raspberry Pi, Arduino, STM32
-- **Communication:** UART, SPI, I2C, Bluetooth, NFC/RFID
-- **Hardware:** FPGA, RTL Design, Sensor Integration
-- **Tools:** Vivado, MATLAB/Simulink, Git, GitHub
+| Project | Technical Focus | Technologies |
+|---|---|---|
+| **Autonomous Robot** | Motor control, encoder feedback, obstacle detection, and autonomous navigation | Raspberry Pi, Python, PWM, HC-SR04 |
+| **NFC/RFID System** | Contactless identification, RFID communication, and sensor interfacing | PN532, NFC/RFID |
+| **RISC-V Floating Point ALU** | Arithmetic operations, RTL implementation, and functional verification | SystemVerilog, Xilinx Vivado |
+| **RowHammer Research** | DRAM disturbance effects, memory reliability, and mitigation concepts | SystemVerilog, Memory Architecture |
+| **RISC-V Debug Module** | Processor debugging architecture and digital logic design | RISC-V, RTL Design |
+| **Evaluation of Libraries** | Technical evaluation and comparison of software libraries | See project documentation |
 
-## Repository Structure
+---
 
-Each project is organized into a separate folder containing its available source code, technical documentation, and supporting materials.
+## Technical Competencies
 
-## Contact
+**Programming & Hardware Description**
+- C, C++, Python, SystemVerilog
+- RTL Design, Digital Logic, Functional Simulation
+
+**Embedded Systems & Hardware**
+- Raspberry Pi, Arduino, STM32
+- GPIO, PWM, Encoder Feedback, Sensor Integration
+- Hardware-Software Interfacing
+
+**Communication Interfaces**
+- UART, SPI, I²C
+- Bluetooth, NFC/RFID
+
+**Development & Engineering Tools**
+- Xilinx Vivado, MATLAB/Simulink
+- Git, GitHub
+- Hardware Debugging and Testing
+
+---
+
+## Engineering Focus
+
+The projects explore key engineering activities, including:
+
+- **Embedded Control:** Sensor-based feedback, motor control, and real-time hardware interaction.
+- **Digital Hardware Design:** RTL modeling, arithmetic logic implementation, and simulation-based verification.
+- **Computer Architecture:** RISC-V-related hardware modules and processor design concepts.
+- **System Integration:** Combining software, sensors, communication interfaces, and hardware components.
+- **Verification & Analysis:** Testbench development, functional testing, and evaluation of system behavior.
+
+---
+
+## Repository Organization
+
+Each project is maintained in a dedicated directory containing its available source code, design files, simulation resources, and technical documentation.
+
+Individual project README files provide implementation details, system architecture, and testing information where available.
+
+---
+
+## About Me
 
 **Ritul Mahajan**
 
-Master's in Electrical Engineering and Embedded Systems
-
+M.Sc. Electrical Engineering and Embedded Systems  
 Hochschule Ravensburg-Weingarten, Germany
 
+**Areas of Interest:** Embedded Software Development, FPGA/RTL Design, RISC-V Architecture, Hardware Verification, and Digital System Development.
 
-## Attribution
+---
 
-This repository may contain material originally published in another GitHub repository. Original copyright notices and applicable licenses are retained. Individual project contributions and third-party material should be identified in the relevant project documentation.
+## License & Attribution
+
+Project materials are subject to their applicable licenses and copyright notices. Original authorship and third-party contributions are acknowledged in the relevant project documentation.
