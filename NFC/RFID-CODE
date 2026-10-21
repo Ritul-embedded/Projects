@@ -1,0 +1,155 @@
+#include <Wire.h>
+#include <Adafruit_PN532.h>
+#include <AESLib.h> // Include AES library
+
+// Initialize the Adafruit_PN532 class for I2C with the correct address (0x24)
+Adafruit_PN532 nfc(&Wire, 0x24);
+
+// Default key for MIFARE authentication (you may modify this if needed)
+uint8_t keyA[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+// AES encryption key (16 bytes for AES-128)
+const byte aesKey[16] = { 's', 'e', 'c', 'r', 'e', 't', 'k', 'e', 'y', '1', '2', '3', '4', '5', '6', '7' };
+
+// Initialization vector (16 bytes, set to all zeros for simplicity)
+byte aesIV[16] = { 0 };
+
+// AESLib instance
+AESLib aesLib;
+
+// Dates (as an example, stored as strings)
+const char plantingDate[] = "2025-01-01";
+const char cuttingDate[] = "2035-01-01";
+const char replantingDate[] = "2035-03-01";
+
+// State variable to control write and read operations
+bool writeData = true;
+
+void setup(void) {
+  Serial.begin(115200);
+  Serial.println("Initializing NFC/RFID Module...");
+
+  // Initialize I2C communication
+  Wire.begin();
+
+  // Start the NFC module with the specified address (0x24)
+  nfc.begin();
+
+  // Check if the PN532 module is found
+  uint32_t versiondata = nfc.getFirmwareVersion();
+  if (!versiondata) {
+    Serial.println("PN532 NFC module not found");
+    while (1);
+  }
+
+  // Configure the NFC module for reading and writing
+  nfc.SAMConfig();
+  Serial.println("Waiting for an RFID tag...");
+}
+
+void loop(void) {
+  if (writeData) {
+    // Write data to the RFID tag
+    if (writeTreeLifecycleData()) {
+      Serial.println("Data written successfully. Switching to read mode...");
+      writeData = false; // Switch to reading mode
+      delay(5000);       // Wait before starting to read
+    } else {
+      Serial.println("Failed to write data. Retrying...");
+    }
+  } else {
+    // Read data from the RFID tag
+    if (readTreeLifecycleData()) {
+      Serial.println("Data read successfully.");
+      delay(5000);       // Wait before trying to write again
+      writeData = true;  // Switch to writing mode
+    } else {
+      Serial.println("Failed to read data. Retrying...");
+    }
+  }
+}
+
+bool writeTreeLifecycleData() {
+  uint8_t success;
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the UID
+  uint8_t uidLength;
+
+  // Wait for an RFID tag to be detected
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+  if (success) {
+    Serial.println("RFID tag detected. Writing encrypted data...");
+
+    // Authenticate the block where data will be written (Block 4 as an example)
+    success = nfc.mifareclassic_AuthenticateBlock(uid, uidLength, 4, 0, keyA);
+    if (success) {
+      // Combine and encrypt data
+      char dataToEncrypt[48];
+      strncpy(dataToEncrypt, plantingDate, 16);
+      strncpy(dataToEncrypt + 16, cuttingDate, 16);
+      strncpy(dataToEncrypt + 32, replantingDate, 16);
+
+      // Encrypt data
+      byte encryptedData[48];
+      for (int i = 0; i < 3; i++) {
+        aesLib.encrypt(
+          (byte*)(dataToEncrypt + (i * 16)), // Input block
+          16,                               // Input block size
+          encryptedData + (i * 16),         // Encrypted output block
+          aesKey,                           // AES key
+          128,                              // Key size in bits (128 for AES-128)
+          aesIV                             // Initialization vector
+        );
+      }
+
+      // Write the encrypted data in three blocks (Block 4, 5, 6)
+      success = nfc.mifareclassic_WriteDataBlock(4, encryptedData);
+      success &= nfc.mifareclassic_WriteDataBlock(5, encryptedData + 16);
+      success &= nfc.mifareclassic_WriteDataBlock(6, encryptedData + 32);
+
+      return success;
+    } else {
+      Serial.println("Authentication failed during write.");
+      return false;
+    }
+  } else {
+    Serial.println("No RFID tag detected for writing.");
+    return false;
+  }
+}
+
+bool readTreeLifecycleData() {
+  uint8_t success;
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer for the returned UID
+  uint8_t uidLength;
+
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+  if (success) {
+    Serial.println("RFID tag detected. Reading raw encrypted data...");
+
+    // Authenticate the block where data was written (Block 4 as an example)
+    success = nfc.mifareclassic_AuthenticateBlock(uid, uidLength, 4, 0, keyA);
+    if (success) {
+      // Read encrypted data
+      byte encryptedData[48];
+      nfc.mifareclassic_ReadDataBlock(4, encryptedData);
+      nfc.mifareclassic_ReadDataBlock(5, encryptedData + 16);
+      nfc.mifareclassic_ReadDataBlock(6, encryptedData + 32);
+
+      // Print raw encrypted data
+      Serial.println("Encrypted data read from the tag:");
+      for (int i = 0; i < 48; i++) {
+        Serial.print(encryptedData[i], HEX);
+        Serial.print(" ");
+      }
+      Serial.println();
+
+      return true;
+    } else {
+      Serial.println("Authentication failed during read.");
+      return false;
+    }
+  } else {
+    Serial.println("No RFID tag detected for reading.");
+    return false;
+  }
+}
